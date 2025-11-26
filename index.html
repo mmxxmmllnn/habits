@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>habits</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+   <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>habits</h1>
+      <div class="small">local and offline habit tracker</div>
+    </header>
+
+    <section id="list" class="card"></section>
+
+    <section id="heatmapCard" class="card" style="display:none">
+      <div class="row space-between"><div id="heatTitle"></div><div class="small">this year</div></div>
+      <div id="heatGrid" class="grid"></div>
+    </section>
+
+    <section class="controls card">
+      <input id="habitName" placeholder="new habit name" />
+      <button id="addHabit">add</button>
+      <button id="export">export</button>
+      <button id="import">import</button>
+      <input id="importFile" type="file" accept="application/json" style="display:none">
+    </section>
+
+
+    <div id="modal" class="modal"><div class="panel"><h3 id="mTitle"></h3><div id="mBody"></div><button id="close">close</button></div></div>
+  </div>
+  <script src="/app.js"></script>
+  
+</body>
+</html>
