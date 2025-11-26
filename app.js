@@ -54,24 +54,60 @@ async function deleteHabit(habitId) {
 const listEl=document.getElementById('list');const heatGrid=document.getElementById('heatGrid');const heatTitle=document.getElementById('heatTitle');const heatmapCard=document.getElementById('heatmapCard');
 const modal=document.getElementById('modal');const mTitle=document.getElementById('mTitle');const mBody=document.getElementById('mBody');
 
+function applyDoneTodayStyles(row, done) {
+    const nameEl = row.querySelector(".habit-name");
+    const btn = row.querySelector(".btn-done");
+
+    if (done) {
+        nameEl.style.fontWeight = "800";
+        btn.style.background = "#2ecc71";
+        btn.style.color = "white";
+        btn.style.borderColor = "#27ae60";
+        btn.textContent = "done ✓";
+    } else {
+        nameEl.style.fontWeight = "600";
+        btn.style.background = "";
+        btn.style.color = "";
+        btn.style.borderColor = "";
+        btn.textContent = "done";
+    }
+}
+async function hasCheckToday(habitId) {
+    const checks = await listChecksForHabit(habitId);
+    const today = todayKey();
+    return checks.some(c => todayKey(new Date(c.ts)) === today);
+}
 async function render(){const hs=await listHabits();listEl.innerHTML='';if(hs.length===0) listEl.innerHTML='<div class="small">no habits yet. add one below.</div>'
-for(const h of hs){const row=document.createElement('div');row.className='habit-row card';row.innerHTML = `
-  <div class="row">
-    <div style="width:40px;height:40px;border-radius:8px;background:${h.color||'#03045eff'}"></div>
-    <div style="margin-left:8px">
-      <div style="font-weight:600">${h.name}</div>
-      <div class="small">${h.description||''}</div>
-    </div>
-  </div>
-  <div class="row">
-    <button class="btn-done">done</button>
-    <button class="small view">heatmap</button>
-    <button class="small delete">delete</button>
-  </div>
+for (const h of hs) {
+
+    const doneToday = await hasCheckToday(h.id);
+
+    const row=document.createElement('div');
+    row.className='habit-row card';
+
+    row.innerHTML = `
+      <div class="row">
+        <div style="width:40px;height:40px;border-radius:8px;background:${h.color||'#03045eff'}"></div>
+        <div style="margin-left:8px">
+          <div class="habit-name" style="font-weight:${doneToday ? '800' : '600'}">
+            ${h.name}
+          </div>
+          <div class="small">${h.description||''}</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn-done" style="${doneToday ? 'background:#2ecc71;color:white;border-color:#27ae60;' : ''}">
+          ${doneToday ? 'done ✓' : 'done'}
+        </button>
+        <button class="small view">heatmap</button>
+        <button class="small delete">delete</button>
+      </div>
 `;
 
 const btn=row.querySelector('.btn-done');const view=row.querySelector('.view');const del = row.querySelector('.delete');
-del.onclick = () => confirmDelete(h.id, h.name);btn.onclick=async()=>{await addCheck({habitId:h.id,ts:Date.now()});btn.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:160});}
+del.onclick = () => confirmDelete(h.id, h.name);btn.onclick=async()=>{await addCheck({habitId:h.id,ts:Date.now()});btn.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:160});applyDoneTodayStyles(row, true);if (heatmapCard.style.display === "block" && heatTitle.textContent === h.name) {
+        showHeatmap(h.id, h.name);
+    }}
 view.onclick=()=>showHeatmap(h.id,h.name);
 listEl.appendChild(row);} }
 
