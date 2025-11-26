@@ -136,4 +136,4 @@ document.getElementById('import').onclick=()=>document.getElementById('importFil
 render();
 
 // register service worker for production (works only when served over http/https)
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').then(()=>console.log('SW registered')).catch(e=>console.warn('SW failed',e))})}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW registered')).catch(e=>console.warn('SW failed',e))})}
