@@ -1,2 +1,1 @@
-# habits
-habit tracker with a github-like overview
+here you go: https://mmxxmmllnn.github.io/habits/
